@@ -1,0 +1,17 @@
+name: "Build legacy Nix package on Ubuntu"
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v12
+      - name: Building package
+        run:  nix-build . -A defaultPackage.x86_64-linux
+      - uses: actions/upload-artifact@v3
+        with:
+          name: url-eater-x86_64-linux
+          path: result/bin/colorpickle
