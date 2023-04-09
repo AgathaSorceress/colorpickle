@@ -15,6 +15,18 @@ struct Args {
     /// Skip generating bold color variants
     #[arg(short = 'b', long)]
     no_bold: bool,
+    /// How much lightness should be added to bold colors
+    #[arg(long, default_value_t = 0.2, value_parser = validate_color_delta, allow_hyphen_values = true)]
+    bold_delta: f64,
+    /// Rotate colors along the hue axis
+    #[arg(long, default_value_t = 0.0, allow_hyphen_values = true)]
+    rotate_hue: f64,
+    /// Lighten/darken colors
+    #[arg(long, default_value_t = 0.0, value_parser = validate_color_delta, allow_hyphen_values = true)]
+    lighten: f64,
+    /// Saturate/desaturate colors
+    #[arg(long, default_value_t = 0.0, value_parser = validate_color_delta, allow_hyphen_values = true)]
+    saturate: f64,
 }
 
 fn main() -> Result<()> {
@@ -41,9 +53,17 @@ fn main() -> Result<()> {
     if !args.no_bold {
         // Create second pairs of lighter colors
         let bold_colors = colors.clone();
-        let bold_colors = bold_colors.iter().map(|c| c.lighten(0.2));
+        let bold_colors = bold_colors.iter().map(|c| c.lighten(args.bold_delta));
         colors.extend(bold_colors);
     }
+
+    // Apply color transformations, if any
+    let colors: Vec<_> = colors
+        .into_iter()
+        .map(|c| c.rotate_hue(args.rotate_hue))
+        .map(|c| c.lighten(args.lighten))
+        .map(|c| c.saturate(args.saturate))
+        .collect();
 
     let brush = Brush::from_mode(Some(ansi::Mode::TrueColor));
 
@@ -60,4 +80,16 @@ fn main() -> Result<()> {
     });
 
     Ok(())
+}
+
+/// Make sure that input value is between -1.0 and 1.0
+fn validate_color_delta(s: &str) -> Result<f64, String> {
+    let num = s
+        .parse()
+        .map_err(|_| format!("`{s}` is not a valid floating point number"))?;
+    if num >= -1.0 && num <= 1.0 {
+        Ok(num)
+    } else {
+        Err(format!("{num} is not in range [-1.0,1.0]"))
+    }
 }
