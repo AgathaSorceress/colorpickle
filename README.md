@@ -31,6 +31,7 @@ Options:
       --rotate-hue <ROTATE_HUE>  Rotate colors along the hue axis [default: 0]
       --lighten <LIGHTEN>        Lighten/darken colors [default: 0]
       --saturate <SATURATE>      Saturate/desaturate colors [default: 0]
+  -l, --light                    Generate a light colorscheme
   -h, --help                     Print help
   -V, --version                  Print version
 ```

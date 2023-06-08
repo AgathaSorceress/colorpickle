@@ -27,6 +27,9 @@ struct Args {
     /// Saturate/desaturate colors
     #[arg(long, default_value_t = 0.0, value_parser = validate_color_delta, allow_hyphen_values = true)]
     saturate: f64,
+    /// Generate a light colorscheme
+    #[arg(short, long)]
+    light: bool,
 }
 
 fn main() -> Result<()> {
@@ -58,12 +61,17 @@ fn main() -> Result<()> {
     }
 
     // Apply color transformations, if any
-    let colors: Vec<_> = colors
+    let mut colors: Vec<_> = colors
         .into_iter()
         .map(|c| c.rotate_hue(args.rotate_hue))
         .map(|c| c.lighten(args.lighten))
         .map(|c| c.saturate(args.saturate))
         .collect();
+
+    // Light theme transformations
+    if args.light {
+        colors.reverse();
+    }
 
     let brush = Brush::from_mode(Some(ansi::Mode::TrueColor));
 

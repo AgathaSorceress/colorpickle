@@ -73,8 +73,8 @@
                 builtins.listToAttrs (lib.lists.imap0 (i: v: {
                   name = builtins.toString i;
                   value = v;
-                }) (lib.strings.splitString "\n"
-                  (builtins.readFile (generate name image args))));
+                }) (lib.strings.splitString "\n" (lib.strings.removeSuffix "\n"
+                  (builtins.readFile (generate name image args)))));
             in {
               environment.graphical.colors = lib.attrsets.mapAttrs
                 (name: value: formattedColors name value.image value.params)
