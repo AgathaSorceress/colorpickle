@@ -3,6 +3,7 @@ use color_thief::ColorFormat;
 use image::io::Reader as ImageReader;
 use miette::{IntoDiagnostic, Result};
 use pastel::ansi::{self, Brush, ToAnsiStyle};
+use std::io::{stdout, IsTerminal};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -79,7 +80,7 @@ fn main() -> Result<()> {
     colors.iter().for_each(|c| {
         println!(
             "{}",
-            if atty::is(atty::Stream::Stdout) {
+            if stdout().is_terminal() {
                 brush.paint(c.to_rgb_hex_string(true), c.text_color().ansi_style().on(c))
             } else {
                 c.to_rgb_hex_string(true)
@@ -95,7 +96,7 @@ fn validate_color_delta(s: &str) -> Result<f64, String> {
     let num = s
         .parse()
         .map_err(|_| format!("`{s}` is not a valid floating point number"))?;
-    if num >= -1.0 && num <= 1.0 {
+    if (-1.0..=1.0).contains(&num) {
         Ok(num)
     } else {
         Err(format!("{num} is not in range [-1.0,1.0]"))

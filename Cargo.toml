@@ -1,6 +1,6 @@
 [package]
 name = "colorpickle"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Agatha V. Lovelace <agatha@technogothic.net>"]
 description = "A colorscheme generator"
@@ -11,7 +11,6 @@ license = "NVPLv7+"
 [dependencies]
 pastel = "0.9.0"
 color-thief = "0.2.2"
-miette = "5.7.0"
+miette = { version = "5.7.0", features = ["fancy"] }
 image = "0.24.6"
 clap = { version = "4.2.1", features = ["derive"] }
-atty = "0.2.14"
