@@ -1,4 +1,4 @@
-name: "Build legacy Nix package on Ubuntu"
+name: "Build Nix package on Ubuntu"
 
 on:
   push:
@@ -7,13 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v12
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v23
       - name: Building package
-        run:  nix-build . -A packages.x86_64-linux.default
+        run:  nix build
+      - name: Get repository name
+        run: echo "REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
       - name: Get commit hash
         run:  echo "COMMIT_HASH=${GITHUB_SHA::6}" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: colorpickle-${{ env.COMMIT_HASH }}-x86_64-linux
-          path: result/bin/colorpickle
+          name: ${{ env.REPO_NAME }}-${{ env.COMMIT_HASH }}-x86_64-linux
+          path: result/bin/${{ env.REPO_NAME }}
