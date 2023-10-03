@@ -26,14 +26,16 @@ Arguments:
 
 Options:
   -c, --colors <COLORS>          Number of colors to generate (excluding bold colors) [default: 8]
+  -l, --light                    Generate a light colorscheme
   -b, --no-bold                  Skip generating bold color variants
       --bold-delta <BOLD_DELTA>  How much lightness should be added to bold colors [default: 0.2]
       --rotate-hue <ROTATE_HUE>  Rotate colors along the hue axis [default: 0]
-      --lighten <LIGHTEN>        Lighten/darken colors [default: 0]
       --saturate <SATURATE>      Saturate/desaturate colors [default: 0]
-  -l, --light                    Generate a light colorscheme
+      --lighten <LIGHTEN>        Lighten/darken colors [default: 0]
+      --no-adjust                Do not darken the background and lighten the foreground colors
+      --backend <BACKEND>        Which algorithm to use [default: okolors] [possible values: color-thief, okolors]
   -h, --help                     Print help
-  -V, --version                  Print version
+  -V, --version                  Print version  
 ```
 
 ## Using the NixOS module
