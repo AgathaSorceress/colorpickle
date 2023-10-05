@@ -1,6 +1,6 @@
 # Colorpickle
 
-![Screenshot of a colorscheme output in a terminal](https://i.imgur.com/06E4cWY.png)
+![Screenshot of a colorscheme output in a terminal, next to the wallpaper it was generated from](https://i.imgur.com/D7o3zMC.png)
 
 A colorscheme generator.
 
