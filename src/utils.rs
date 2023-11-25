@@ -3,7 +3,6 @@ use clap::ValueEnum;
 use color_thief::ColorFormat;
 use image::DynamicImage;
 use miette::{IntoDiagnostic, Result};
-use nalgebra::{matrix, ArrayStorage, Const, Matrix};
 use okolors::OklabCounts;
 use pastel::{Color, Fraction};
 
@@ -56,8 +55,7 @@ fn generate_okolors(image: &DynamicImage, args: &Args) -> Result<Vec<Color>> {
     let colors: Vec<_> = okolors::run(&oklab, 5, args.colors, 0.05, 128, 0)
         .centroids
         .into_iter()
-        .map(|c| oklab_to_xyz(c.l, c.a, c.b))
-        .map(|c| Color::from_xyz(c.0 as f64, c.1 as f64, c.2 as f64, 1.0))
+        .map(|c| Color::from_oklab(c.l as f64, c.a as f64, c.b as f64, 1.0))
         .collect();
 
     Ok(colors)
@@ -95,29 +93,4 @@ fn transform_colors(colors: &mut Vec<Color>, args: &Args) -> Vec<Color> {
     }
 
     colors
-}
-
-/// Convert Oklab coordinates to XYZ coordinates according to
-/// https://bottosson.github.io/posts/oklab
-fn oklab_to_xyz(l: f32, a: f32, b: f32) -> (f32, f32, f32) {
-    // Pre-computed inversions of the M₁ and M₂ matrices
-    const M1_INV: Matrix<f32, Const<3>, Const<3>, ArrayStorage<f32, 3, 3>> = matrix![
-         1.227014,   -0.5578,     0.28125617;
-        -0.04058018,  1.1122569, -0.07167668;
-        -0.07638129, -0.421482,   1.5861632;
-    ];
-
-    const M2_INV: Matrix<f32, Const<3>, Const<3>, ArrayStorage<f32, 3, 3>> = matrix![
-        1.0000001,  0.3963378,    0.21580376;
-        1.0,       -0.105561346, -0.06385418;
-        1.0000001, -0.08948418,  -1.2914855;
-    ];
-
-    let l_m_s_ = M2_INV * matrix![l; a; b];
-
-    let lms = l_m_s_.map(|v| v.powi(3));
-
-    let xyz = M1_INV * lms;
-
-    (xyz.x, xyz.y, xyz.z)
 }

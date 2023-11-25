@@ -13,6 +13,5 @@ clap = { version = "4.4.6", features = ["derive"] }
 color-thief = "0.2.2"
 image = "0.24.7"
 miette = { version = "5.10.0", features = ["fancy"] }
-nalgebra = "0.32.3"
 okolors = "0.4.0"
-pastel = "0.9.0"
+pastel = { git = "https://github.com/sharkdp/pastel.git", rev = "f205dec1952808ed3c33e9bc5ad98d0dccb19f74" }
